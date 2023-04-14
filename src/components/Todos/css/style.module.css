@@ -1,0 +1,26 @@
+.container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-color: rgba(255, 255, 255, 0.5);
+    display: block;
+    width: 332px;
+    box-sizing: border-box;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    box-shadow: 00px 5px 5px #ccc;
+}
+
+.todoItem {
+    padding: 16px;
+    box-sizing: border-box;
+    border-bottom: 1px solid #ccc;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+}
+
+.completed {
+    text-decoration: line-through;
+}
