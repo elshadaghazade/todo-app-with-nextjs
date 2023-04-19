@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback, useContext, useState} from 'react';
 
 import Heading from "@/components/ui/Heading";
 import Input from "@/components/ui/Input";
@@ -6,39 +6,29 @@ import style from '@/styles/Home.module.css';
 import TodoList from '@/components/Todos/TodoList';
 import TodoItem from '@/components/Todos/TodoItem';
 import Panel from '@/components/Panel';
+import { todoContext } from '@/context/TodosContext';
 
 export default function Home() {
 
+
   const [todos, setTodos] = useState([]);
-  const [filter, setFilter] = useState('all');
+
+  const [state, dispatch] = useContext(todoContext);
 
   const onKeyUp = useCallback(e => {
       if (e.key === 'Enter') {
-        const todo = {
-          text: e.target.value,
-          isActive: true
-        }
-
-        const t = [...todos, todo];
-        setTodos(t);
+        dispatch({
+          type: 'add_todo',
+          payload: e.target.value
+        });
+        
         e.target.value = '';
       }
-  }, [todos]);
-
-  
-  const deactivate = index => {
-    const t = [...todos];
-    t[index].isActive = !t[index].isActive;
-    setTodos(t);
-  }
+  }, []);
 
   const remove = index => {
     setTodos(state => state.filter((todo, i) => i != index));
   }
-
-  const clearCompleted = useCallback(() => {
-    setTodos(state => state.filter(({isActive}) => isActive))
-  }, []);
 
 
 
@@ -52,8 +42,8 @@ export default function Home() {
       />
 
       <TodoList>
-        {todos.filter(todo => {
-          switch(filter) {
+        {state.todos.filter(todo => {
+          switch(state.filter) {
             case 'all':
               return true;
             case 'active':
@@ -63,21 +53,17 @@ export default function Home() {
           }
         }).map((todo, index) => (
           <TodoItem
-            key={`todo-${index}`} 
-            deactivate={e => deactivate(index)} 
+            key={`todo-${index}`}
+            index={index}
             remove={e => remove(index)}
             {...todo}
           >{todo.text}</TodoItem>
         ))}
       </TodoList>
 
-      {todos.length ? 
+      {state.todos.length ? 
       (
-        <Panel 
-          clearCompleted={clearCompleted} 
-          itemCount={todos.filter(({isActive}) => isActive).length} 
-          setFilter={setFilter}
-        />
+        <Panel />
       ) : ''}
     </div>
   )
